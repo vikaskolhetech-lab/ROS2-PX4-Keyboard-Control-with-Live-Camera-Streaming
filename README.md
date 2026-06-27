@@ -286,7 +286,7 @@ Choose
 ```
 IMX214/image
 ```
-#scripts/start_px4.sh
+scripts/start_px4.sh
 
 #!/bin/bash
 
@@ -296,7 +296,7 @@ cd ~/drone_sim/PX4-Autopilot
 
 make px4_sitl gz_x500_depth
 
-#scripts/start_bridge.sh
+scripts/start_bridge.sh
 #!/bin/bash
 
 source /opt/ros/jazzy/setup.bash
@@ -305,7 +305,7 @@ ros2 run ros_gz_bridge parameter_bridge \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image@sensor_msgs/msg/Image@gz.msgs.Image \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo
 
-#scripts/start_keyboard.sh
+scripts/start_keyboard.sh
 ...bash
 
 source ~/px4_ros_ws/install/setup.bash
