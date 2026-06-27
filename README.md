@@ -311,8 +311,6 @@ source ~/px4_ros_ws/install/setup.bash
 
 ros2 run drone_keyboard keyboard_control
 
-
-commands/startup_commands.md
 # Startup
 
 Terminal 1
