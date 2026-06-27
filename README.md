@@ -1,85 +1,93 @@
 # ROS2-PX4-Keyboard-Control-with-Live-Camera-Streaming
 A complete ROS2 Jazzy and PX4 SITL project demonstrating keyboard control of an X500 drone in Gazebo Harmonic with real-time camera streaming using ROS2 image transport. The project includes Micro XRCE-DDS communication, PX4 Offboard Control, Gazebo simulation, ROS2 image bridge, and live camera visualization using rqt_image_view.
-Overview
+ROS2 Autonomous Drone Simulation using PX4 + Gazebo Harmonic
+Project Overview
 
-This project demonstrates how to control a PX4 drone in Gazebo Harmonic using ROS2 Jazzy.
+This project demonstrates the complete simulation of a quadcopter using PX4 Autopilot, ROS2 Jazzy, and Gazebo Harmonic on Ubuntu 24.04.
 
-The drone can
+The drone can be controlled manually using the keyboard while streaming live camera images to ROS2. Both RGB camera and LiDAR sensors are integrated, making the project suitable as a foundation for autonomous navigation, SLAM, obstacle avoidance, and future AI applications.
 
-Takeoff
-Land
-Move Forward
-Move Backward
-Move Left
-Move Right
-Ascend
-Descend
-Rotate
-Stream live camera images
-
-Everything runs completely inside simulation.
-
+Features
+PX4 SITL Flight Controller
+Gazebo Harmonic Simulation
+ROS2 Jazzy Integration
+Micro XRCE DDS Communication
+Keyboard Teleoperation
+Live RGB Camera Streaming
+Depth Camera Support
+2D LiDAR Support
+ROS-Gazebo Topic Bridging
+Ready for SLAM
+Ready for Autonomous Navigation
 Software Used
-Software	Version
-Ubuntu	24.04
-ROS2	Jazzy
-Gazebo	Harmonic
-PX4	Latest Main
-Micro XRCE DDS Agent	Latest
-Python	3.12
-Project Structure
+Ubuntu 24.04
+ROS2 Jazzy
+Gazebo Harmonic
+PX4 Autopilot
+Micro XRCE DDS Agent
+ros_gz_bridge
+OpenCV
+rqt_image_view
+Project Architecture
+Keyboard
+      │
+      ▼
+ROS2 Keyboard Node
+      │
+      ▼
+PX4 Offboard Commands
+      │
+      ▼
+Micro XRCE DDS
+      │
+      ▼
+PX4 SITL
+      │
+      ▼
+Gazebo Harmonic
+      │
+      ├──────── RGB Camera
+      │              │
+      │              ▼
+      │        ros_gz_bridge
+      │              │
+      │              ▼
+      │        ROS2 Image Topic
+      │              │
+      │              ▼
+      │      rqt_image_view
+      │
+      └──────── LiDAR
+                     │
+                     ▼
+             ros_gz_bridge
+                     │
+                     ▼
+             ROS2 LaserScan
+Workspace Structure
 px4_ros_ws/
 
 src/
 
-drone_keyboard/
-    keyboard_control.py
+├── drone_keyboard/
 
-drone_controller/
+├── drone_controller/
 
-drone_control/
+├── drone_control/
 
-px4_ros_com/
+├── px4_msgs/
 
-px4_msgs/
-Workspace
-~/px4_ros_ws
-Install Dependencies
-sudo apt update
+└── px4_ros_com/
 
-Install ROS
+PX4-Autopilot/
 
-sudo apt install ros-jazzy-desktop
+Gazebo Models/
 
-Install Gazebo
-
-sudo apt install gz-harmonic
-
-Install PX4 dependencies
-
-bash ./Tools/setup/ubuntu.sh
-
-Install DDS Agent
-
-sudo apt install ros-jazzy-micro-ros-agent
-
-Install Image Viewer
-
-sudo apt install ros-jazzy-rqt-image-view
-
-Install ros_gz_bridge
-
-sudo apt install ros-jazzy-ros-gz
-Build Workspace
-cd ~/px4_ros_ws
-
-colcon build
-
-source install/setup.bash
-Startup Procedure
+Launch Files/
+Starting the Simulation
 Terminal 1
 
-DDS Agent
+Start DDS Agent
 
 source /opt/ros/jazzy/setup.bash
 
@@ -87,8 +95,9 @@ MicroXRCEAgent udp4 -p 8888
 
 Expected
 
-Running...
-Session Established
+running...
+
+session established
 Terminal 2
 
 Start PX4
@@ -97,145 +106,189 @@ cd ~/drone_sim/PX4-Autopilot
 
 make px4_sitl gz_x500_depth
 
+or
+
+make px4_sitl gz_x500_lidar_2d
+
 Wait until
 
 pxh>
 
 appears.
 
+PX4 Parameters
+
+Inside PX4 console
+
+param set COM_RCL_EXCEPT 4
+
+param set COM_ARM_WO_GPS 1
+
+param set NAV_DLL_ACT 0
+
+param save
+
+Verify
+
+commander check
 Terminal 3
 
-Bridge Camera
+Bridge RGB Camera
 
 source /opt/ros/jazzy/setup.bash
 
 ros2 run ros_gz_bridge parameter_bridge \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image@sensor_msgs/msg/Image@gz.msgs.Image \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo
-Verify Topics
-ros2 topic list
-
-Expected
-
-/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image
-
-/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info
-Check Camera Frequency
-ros2 topic hz \
-/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image
-
-Expected
-
-6–10 Hz
 Terminal 4
 
-Run Keyboard Controller
+Bridge Depth Camera
+
+source /opt/ros/jazzy/setup.bash
+
+ros2 run ros_gz_bridge parameter_bridge \
+/depth_camera@sensor_msgs/msg/Image@gz.msgs.Image
+Terminal 5
+
+LiDAR Bridge
+
+source /opt/ros/jazzy/setup.bash
+
+ros2 run ros_gz_bridge parameter_bridge \
+/world/default/model/x500_lidar_2d_0/link/link/sensor/lidar_2d_v2/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan
+Terminal 6
+
+Keyboard Control
+
+source /opt/ros/jazzy/setup.bash
 
 source ~/px4_ros_ws/install/setup.bash
 
 ros2 run drone_keyboard keyboard_control
-Terminal 5
+Terminal 7
 
-View Live Camera
+Open Live Camera
 
 source /opt/ros/jazzy/setup.bash
 
 rqt_image_view
 
-Choose
+Select
 
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image
 
-You should now see live video from the drone.
+You should now see the live RGB video from the drone.
 
+Verify Camera
+ros2 topic hz \
+/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image
+
+Expected
+
+6–20 Hz
+Verify Depth Camera
+ros2 topic hz /depth_camera
+
+Expected
+
+6–20 Hz
+Verify LiDAR
+ros2 topic hz \
+/world/default/model/x500_lidar_2d_0/link/link/sensor/lidar_2d_v2/scan
+
+Expected
+
+30 Hz
 Keyboard Controls
-Key	Action
-T	Takeoff
-L	Land
+Key	Function
+T	Arm
+Y	Takeoff
 W	Forward
 S	Backward
 A	Left
 D	Right
-Q	Rotate Left
-E	Rotate Right
-R	Up
-F	Down
-X	Stop
-Verify ROS Communication
+I	Up
+K	Down
+J	Rotate Left
+L	Rotate Right
+Space	Hover
+X	Land
+ROS2 Topics
 
-List topics
+RGB Camera
 
-ros2 topic list
+/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image
 
-Check nodes
+Camera Info
 
-ros2 node list
+/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info
 
-Check PX4 connection
+Depth Image
 
-ros2 topic list | grep fmu
-Camera Verification
-ros2 topic echo \
-/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image --once
-Useful Commands
+/depth_camera
 
-DDS Agent
+Point Cloud
+
+/depth_camera/points
+
+LiDAR Scan
+
+/world/default/model/x500_lidar_2d_0/link/link/sensor/lidar_2d_v2/scan
+
+PX4 Topics
+
+/fmu/in/*
+/fmu/out/*
+System Verification Commands
+
+DDS
 
 MicroXRCEAgent udp4 -p 8888
 
-Check Image Rate
+PX4
+
+commander check
+
+Camera Rate
 
 ros2 topic hz \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image
 
-View Camera
+Depth
 
-rqt_image_view
+ros2 topic hz /depth_camera
 
-Check PX4 Topics
+LiDAR
 
-ros2 topic list | grep fmu
-Features
-PX4 SITL
-Gazebo Harmonic Simulation
-ROS2 Jazzy
-Keyboard Teleoperation
-Live RGB Camera
-DDS Communication
-ROS2 Image Transport
-Real-Time Video Streaming
-Technologies
-ROS2 Jazzy
-PX4
-Gazebo Harmonic
-Python
-Micro XRCE DDS
-ros_gz_bridge
+ros2 topic hz \
+/world/default/model/x500_lidar_2d_0/link/link/sensor/lidar_2d_v2/scan
+
+Camera Viewer
+
 rqt_image_view
 Future Improvements
-SLAM
-LiDAR Mapping
 Autonomous Navigation
+SLAM Toolbox
+RTAB-Map
 Obstacle Avoidance
+Path Planning
 Mission Planning
-Waypoint Navigation
-Recommended GitHub folder structure
-ROS2-PX4-Keyboard-Control-with-Live-Camera-Streaming/
-│
-├── README.md
-├── LICENSE
-├── images/
-│   ├── drone.png
-│   ├── gazebo.png
-│   ├── live_camera.png
-│   ├── keyboard_control.png
-│   └── architecture.png
-├── src/
-│   └── drone_keyboard/
-├── launch/
-├── scripts/
-├── docs/
-│   ├── Installation.md
-│   ├── Startup_Guide.md
-│   └── Troubleshooting.md
-└── videos/
+Object Detection using YOLO
+AI-based Navigation
+Multi-Drone Simulation
+Technologies
+Ubuntu 24.04
+ROS2 Jazzy
+PX4 Autopilot
+Gazebo Harmonic
+Micro XRCE DDS
+ros_gz_bridge
+OpenCV
+C++
+Python
+Author
+
+Vikas Kolhe
+
+Project Title:
+ROS2 Autonomous Drone Simulation with PX4, Gazebo Harmonic, Keyboard Teleoperation, Live Camera Streaming, and LiDAR Integration
