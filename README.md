@@ -266,7 +266,3 @@ DDS
 ```bash
 MicroXRCEAgent udp4 -p 8888
 ```
-
-Everything is now installed.
-
-The next section explains the complete startup procedure for every terminal required to fly the drone.
