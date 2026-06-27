@@ -294,6 +294,7 @@ source /opt/ros/jazzy/setup.bash
 cd ~/drone_sim/PX4-Autopilot
 
 make px4_sitl gz_x500_depth
+
 scripts/start_bridge.sh
 #!/bin/bash
 
@@ -302,12 +303,15 @@ source /opt/ros/jazzy/setup.bash
 ros2 run ros_gz_bridge parameter_bridge \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image@sensor_msgs/msg/Image@gz.msgs.Image \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo
+
 scripts/start_keyboard.sh
 #!/bin/bash
 
 source ~/px4_ros_ws/install/setup.bash
 
 ros2 run drone_keyboard keyboard_control
+
+
 commands/startup_commands.md
 # Startup
 
