@@ -1,41 +1,5 @@
 # ROS2-PX4-Keyboard-Control-with-Live-Camera-Streaming
 A complete ROS2 Jazzy and PX4 SITL project demonstrating keyboard control of an X500 drone in Gazebo Harmonic with real-time camera streaming using ROS2 image transport. The project includes Micro XRCE-DDS communication, PX4 Offboard Control, Gazebo simulation, ROS2 image bridge, and live camera visualization using rqt_image_view.
-ROS2 Autonomous Drone Simulation using PX4 + Gazebo Harmonic
-
-ROS2-PX4-Drone-Keyboard-Control-Live-Camera/
-
-│
-├── README.md
-├── LICENSE
-├── .gitignore
-│
-├── docs/
-│   ├── Installation.md
-│   ├── Startup_Guide.md
-│   ├── Camera_Streaming.md
-│   ├── Keyboard_Control.md
-│   ├── Troubleshooting.md
-│
-├── images/
-│   ├── architecture.png
-│   ├── drone.png
-│   ├── gazebo.png
-│   └── camera_stream.png
-│
-├── scripts/
-│   ├── start_px4.sh
-│   ├── start_bridge.sh
-│   ├── start_camera.sh
-│   ├── start_keyboard.sh
-│   └── startup_all.sh
-│
-├── commands/
-│   ├── startup_commands.md
-│   ├── camera_commands.md
-│   ├── keyboard_commands.md
-│   └── troubleshooting.md
-│
-└── src/
 
 # ROS2 PX4 Drone Keyboard Control with Live Camera Streaming
 
